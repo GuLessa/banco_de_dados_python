@@ -61,12 +61,19 @@ notebook.grid()
 aba_solicitante = Frame(notebook)
 aba_titulo = Frame(notebook)
 aba_pagamento = Frame(notebook)
+aba_consulta = Frame(notebook)
 
 notebook.add(aba_solicitante, text='Setor Solicitante')
 notebook.add(aba_titulo, text='Título')
 notebook.add(aba_pagamento, text='Informações de pagamento')
+notebook.add(aba_consulta, text='Consultas')
 
 #Cria entradas
+consulta_lable = Label(aba_consulta, text="Digite o mês a ser consultado")
+consulta_lable.grid(row=0,column=0)
+consulta_entry = Entry(aba_consulta)
+consulta_entry.grid(row=0,column=1)
+
 empresa_solicitante_lable = Label(aba_solicitante, text="Área Solicitante")
 empresa_solicitante_lable.grid(row=0, column=0)
 empresa_solicitante_entry = Entry(aba_solicitante)
@@ -243,6 +250,21 @@ def add_data_pagamento():
     empresa_solicitante_entry.delete(0, 'end')
     codigo_titulo_entry.delete(0, 'end')
 
+#Função que realiza as consultas
+def realiza_consulta():
+    campo_pesquisado = consulta_entry.get()
+    
+    c.execute('''SELECT * FROM pagamento
+              WHERE date LIKE ?
+              ORDER BY valor''',(campo_pesquisado))
+
+    results = c.fetchall()
+
+    consulta_entry.delete(0, 'end')
+
+    for result in results:
+        print(result)
+
 #Mensagem de confirmação
     messagebox.showinfo("Dados inserido")
 
@@ -255,6 +277,9 @@ submit_btn.grid(row=6, column=1)
 
 submit_btn = Button(aba_pagamento, text="Adicionar ao Banco de Dados", command=add_data_pagamento)
 submit_btn.grid(row=15, column=1)
+
+submit_btn = Button(aba_consulta, text="Consultar no Banco de Dados", command=realiza_consulta)
+submit_btn.grid(row=1, column=1)
 
 root.mainloop()
 
